@@ -7,6 +7,7 @@ import {
   Alert,
   Pressable,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import Button from '../components/Button';
 import colors from '../constants/colors';
@@ -28,9 +29,22 @@ const Home = ({navigation}: any) => {
     role: '',
   });
 
+  const [devices, setDevices] = useState([]);
+  const [availableDevice, setAvailableDevice] = useState([]);
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    fetchCurrentUser();
+    onRefresh();
+    // fetchCurrentUser();
+    // fetchDevices();
+    // fetchUsers();
   }, []);
+
+  const onRefresh = () => {
+    fetchCurrentUser();
+    fetchDevices();
+    fetchUsers();
+  };
 
   const fetchCurrentUser = async () => {
     const currentUser = auth().currentUser;
@@ -45,6 +59,40 @@ const Home = ({navigation}: any) => {
       });
   };
 
+  const fetchDevices = async () => {
+    try {
+      firestore()
+        .collection('Devices')
+        .get()
+        .then(snapshot => {
+          let temp: any = [];
+          snapshot.forEach(item => {
+            temp.push(item.data());
+          });
+          setDevices(temp);
+          setAvailableDevice(
+            temp.filter((item: any) => item.manageById === ''),
+          );
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    const fetchedUsers = await firestore()
+      .collection('Users')
+      .get()
+      .then(snap => {
+        let temp: any = [];
+        snap.forEach(item => {
+          temp.push(item.data());
+        });
+        return temp;
+      });
+    setUsers(fetchedUsers);
+  };
+
   const handleSignOut = () => {
     signOut();
     auth().signOut();
@@ -52,11 +100,14 @@ const Home = ({navigation}: any) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={false} />
+        }>
         <View style={{padding: 20}}>
           <View style={styles.header}>
             <View>
-              <Text>{user.role}</Text>
+              <Text>{user.name}</Text>
               <Text style={styles.h1}>Dashboard</Text>
             </View>
             <Pressable
@@ -75,14 +126,21 @@ const Home = ({navigation}: any) => {
                 style={styles.box}
                 onPress={() => navigation.navigate('Devices')}>
                 <Icon name="mobile1" size={25} color={colors.lightBlack} />
-                <Text style={styles.boxTitle}>Devices</Text>
+                <View style={{marginLeft: 10}}>
+                  <Text style={styles.boxTitle}>Devices</Text>
+                  <Text>Available devices: {availableDevice.length}</Text>
+                  <Text>Total Devices: {devices.length}</Text>
+                </View>
               </Pressable>
 
               <Pressable
                 style={styles.box}
                 onPress={() => navigation.navigate('Users')}>
                 <Icon name="user" size={25} color={colors.lightBlack} />
-                <Text style={styles.boxTitle}>Users</Text>
+                <View style={{marginLeft: 10}}>
+                  <Text style={styles.boxTitle}>Users</Text>
+                  <Text>Total Users: {users.length}</Text>
+                </View>
               </Pressable>
             </View>
           )}
@@ -106,21 +164,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   box: {
-    width: width / 2 - 30,
+    // width: width / 2 - 30,
     backgroundColor: '#f7f7f7',
     padding: 20,
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
   },
   boxTitle: {
-    marginLeft: 10,
     color: colors.lightBlack,
+    fontWeight: 'bold',
+    fontSize: 17,
+    marginBottom: 5,
   },
   boxWrap: {
     marginTop: 40,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
+    // justifyContent: 'space-between',
   },
 });

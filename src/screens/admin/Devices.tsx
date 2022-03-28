@@ -6,12 +6,14 @@ import {
   ScrollView,
   Pressable,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import BackBtn from '../../components/BackBtn';
 import colors from '../../constants/colors';
 import Icon from 'react-native-vector-icons/AntDesign';
 import firestore from '@react-native-firebase/firestore';
 import {useFocusEffect} from '@react-navigation/native';
+import DeviceCard from '../../components/DeviceCard';
 
 const Devices = ({navigation}: any) => {
   const [devices, setDevices] = useState([]);
@@ -48,12 +50,18 @@ const Devices = ({navigation}: any) => {
           <Text style={styles.h1}>Devices</Text>
           <Pressable
             onPress={() => {
-              navigation.navigate('AddDevice');
+              navigation.navigate('AddDevice', {
+                type: 'Add',
+                data: {},
+              });
             }}>
             <Icon name="pluscircleo" size={26} />
           </Pressable>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl onRefresh={fetchDevices} refreshing={false} />
+          }>
           <View style={{marginTop: 20}}>
             <View>
               <TextInput
@@ -62,6 +70,7 @@ const Devices = ({navigation}: any) => {
                 style={styles.search}
               />
             </View>
+
             {devices
               .filter((item: any) => {
                 if (
@@ -78,31 +87,7 @@ const Devices = ({navigation}: any) => {
               })
               .map((item: any, i) => {
                 return (
-                  <View key={i} style={styles.card}>
-                    <Text style={styles.deviceName}>{item.deviceName}</Text>
-                    <View style={styles.row}>
-                      <Icon name="link" color={colors.lightBlack} size={20} />
-                      <Text style={{color: colors.lightBlack, marginLeft: 10}}>
-                        {item.serialNo}
-                      </Text>
-                    </View>
-                    <View style={styles.row}>
-                      <Icon name="user" color={colors.lightBlack} size={20} />
-                      <Text style={{color: colors.lightBlack, marginLeft: 10}}>
-                        {item.manageBy}
-                      </Text>
-                    </View>
-                    <View style={styles.row}>
-                      <Icon
-                        name="calendar"
-                        color={colors.lightBlack}
-                        size={20}
-                      />
-                      <Text style={{color: colors.lightBlack, marginLeft: 10}}>
-                        {item.issueDate}
-                      </Text>
-                    </View>
-                  </View>
+                  <DeviceCard key={i} item={item} fetchDevices={fetchDevices} />
                 );
               })}
           </View>

@@ -47,6 +47,7 @@ const SignUp = ({navigation, route}: any) => {
               email: values.email.trim(),
               password: values.password,
               role: role,
+              createdAt: firestore.Timestamp.now(),
             })
             .then(() => {
               console.log('User added!');

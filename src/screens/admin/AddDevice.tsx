@@ -21,7 +21,6 @@ const deviceSchema = yup.object().shape({
   deviceName: yup.string().required('Device name is required'),
   deviceType: yup.string().required('Device type is required'),
   serialNo: yup.string().required('Serial No is required'),
-  manageBy: yup.string().required('Please select user'),
   issueDate: yup
     .string()
     .matches(
@@ -31,7 +30,8 @@ const deviceSchema = yup.object().shape({
     .required('Please select issue date'),
 });
 
-const AddDevice = ({navigation}: any) => {
+const AddDevice = ({navigation, route}: any) => {
+  const {type, data} = route.params;
   const [deviceTypeM, setDeviceTypeM] = useState(false);
   const [manageByM, setManageByM] = useState(false);
   const [users, setUsers] = useState([]);
@@ -68,9 +68,25 @@ const AddDevice = ({navigation}: any) => {
       .set({
         ...values,
         deviceId: id,
+        createdAt: firestore.Timestamp.now(),
       });
     setLoading(false);
     Toast.show('Device successfully added');
+    navigation.goBack();
+  };
+
+  const updateDevice = (values: any) => {
+    setLoading(true);
+    firestore()
+      .collection('Devices')
+      .doc(data.deviceId)
+      .set({
+        ...values,
+        deviceId: data.deviceId,
+        createdAt: firestore.Timestamp.now(),
+      });
+    setLoading(false);
+    Toast.show('Device successfully updated');
     navigation.goBack();
   };
 
@@ -80,7 +96,7 @@ const AddDevice = ({navigation}: any) => {
       <ScrollView>
         <View style={{padding: 20, paddingTop: 0}}>
           <View style={styles.header}>
-            <Text style={styles.h1}>Add Device</Text>
+            <Text style={styles.h1}>{type} Device</Text>
           </View>
         </View>
 
@@ -90,16 +106,16 @@ const AddDevice = ({navigation}: any) => {
             validateOnChange={false}
             validateOnBlur={false}
             initialValues={{
-              deviceName: '',
-              deviceType: '',
-              serialNo: '',
-              manageBy: '',
-              manageById: '',
-              issueDate: '',
+              deviceName: type === 'Update' ? data.deviceName : '',
+              deviceType: type === 'Update' ? data.deviceType : '',
+              serialNo: type === 'Update' ? data.serialNo : '',
+              manageBy: type === 'Update' ? data.manageBy : '',
+              manageById: type === 'Update' ? data.manageById : '',
+              issueDate: type === 'Update' ? data.issueDate : '',
             }}
             onSubmit={values => {
               console.log(values);
-              addDevice(values);
+              type === 'Add' ? addDevice(values) : updateDevice(values);
             }}>
             {({
               handleChange,
