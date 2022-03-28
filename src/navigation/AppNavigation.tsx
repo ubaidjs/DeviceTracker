@@ -5,6 +5,9 @@ import Onboarding from '../screens/Onboarding';
 import Login from '../screens/Login';
 import SignUp from '../screens/SignUp';
 import Home from '../screens/Home';
+import Devices from '../screens/admin/Devices';
+import Users from '../screens/admin/Users';
+import AddDevice from '../screens/admin/AddDevice';
 
 const Stack = createNativeStackNavigator();
 export const AuthContext = React.createContext<any>({});
@@ -79,6 +82,9 @@ const AppNavigation = () => {
         ) : (
           <>
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Devices" component={Devices} />
+            <Stack.Screen name="Users" component={Users} />
+            <Stack.Screen name="AddDevice" component={AddDevice} />
           </>
         )}
       </Stack.Navigator>

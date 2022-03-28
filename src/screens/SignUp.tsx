@@ -16,7 +16,7 @@ const signupSchema = yup.object().shape({
   email: yup
     .string()
     .email('Please enter valid email')
-    .required('Please enter valid email'),
+    .required('Email address is required'),
   phone: yup
     .string()
     .min(10, 'Invalid phone number')
@@ -34,7 +34,7 @@ const SignUp = ({navigation, route}: any) => {
     try {
       setLoading(true);
       auth()
-        .createUserWithEmailAndPassword(values.email, values.password)
+        .createUserWithEmailAndPassword(values.email.trim(), values.password)
         .then(() => {
           console.log('User account created & signed in!');
           firestore()
@@ -44,7 +44,7 @@ const SignUp = ({navigation, route}: any) => {
               id: id,
               name: values.name,
               phone: values.phone,
-              email: values.email,
+              email: values.email.trim(),
               password: values.password,
               role: role,
             })
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f7f7',
     borderRadius: 10,
     paddingLeft: 10,
+    height: 50,
   },
   error: {
     // marginBottom: 20,

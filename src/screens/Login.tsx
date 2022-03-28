@@ -21,7 +21,7 @@ const Login = ({navigation, route}: any) => {
     }
     setLoading(true);
     auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email.trim(), password.trim())
       .then(() => {
         setLoading(false);
         signIn();
@@ -66,11 +66,13 @@ const Login = ({navigation, route}: any) => {
             onPress={handleLogin}
             loading={loading}
           />
-          <Pressable
-            style={{margin: 40, alignSelf: 'center'}}
-            onPress={() => navigation.navigate('SignUp', {role})}>
-            <Text style={styles.create}>Create Account</Text>
-          </Pressable>
+          {role === 'employee' && (
+            <Pressable
+              style={{margin: 40, alignSelf: 'center'}}
+              onPress={() => navigation.navigate('SignUp', {role})}>
+              <Text style={styles.create}>Create Account</Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </View>
@@ -85,6 +87,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
     paddingLeft: 10,
+    height: 50,
   },
   create: {
     fontWeight: 'bold',
