@@ -16,6 +16,7 @@ import * as yup from 'yup';
 import Button from '../../components/Button';
 import makeId from '../../constants/makeId';
 import Toast from 'react-native-simple-toast';
+import moment from 'moment';
 
 const deviceSchema = yup.object().shape({
   deviceName: yup.string().required('Device name is required'),
@@ -26,8 +27,7 @@ const deviceSchema = yup.object().shape({
     .matches(
       /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/,
       'Invalid date format',
-    )
-    .required('Please select issue date'),
+    ),
 });
 
 const AddDevice = ({navigation, route}: any) => {
@@ -48,6 +48,7 @@ const AddDevice = ({navigation, route}: any) => {
   const fetchUsers = async () => {
     const fetchedUsers = await firestore()
       .collection('Users')
+      .orderBy('name')
       .get()
       .then(snap => {
         let temp: any = [];
@@ -69,6 +70,7 @@ const AddDevice = ({navigation, route}: any) => {
         ...values,
         deviceId: id,
         createdAt: firestore.Timestamp.now(),
+        updatedAt: firestore.Timestamp.now(),
       });
     setLoading(false);
     Toast.show('Device successfully added');
@@ -84,6 +86,7 @@ const AddDevice = ({navigation, route}: any) => {
         ...values,
         deviceId: data.deviceId,
         createdAt: firestore.Timestamp.now(),
+        updatedAt: firestore.Timestamp.now(),
       });
     setLoading(false);
     Toast.show('Device successfully updated');
@@ -146,7 +149,7 @@ const AddDevice = ({navigation, route}: any) => {
                   {values.deviceType === '' ? (
                     <Text style={styles.placeholder}>Device Type</Text>
                   ) : (
-                    <Text>{values.deviceType}</Text>
+                    <Text style={{color: '#000'}}>{values.deviceType}</Text>
                   )}
                 </Pressable>
                 <View style={{marginBottom: 20}}>
@@ -175,7 +178,7 @@ const AddDevice = ({navigation, route}: any) => {
                   {values.manageBy === '' ? (
                     <Text style={styles.placeholder}>Manage By</Text>
                   ) : (
-                    <Text>{values.manageBy}</Text>
+                    <Text style={{color: '#000'}}>{values.manageBy}</Text>
                   )}
                 </Pressable>
                 <View style={{marginBottom: 20}}>
@@ -205,6 +208,8 @@ const AddDevice = ({navigation, route}: any) => {
                 />
 
                 <Modal
+                  animationIn="zoomIn"
+                  animationOut="zoomOut"
                   isVisible={deviceTypeM}
                   onBackdropPress={closeDeviceTypeM}
                   onBackButtonPress={closeDeviceTypeM}>
@@ -238,6 +243,8 @@ const AddDevice = ({navigation, route}: any) => {
                 </Modal>
 
                 <Modal
+                  animationIn="zoomIn"
+                  animationOut="zoomOut"
                   isVisible={manageByM}
                   onBackdropPress={closeManageByM}
                   onBackButtonPress={closeManageByM}>
@@ -250,6 +257,10 @@ const AddDevice = ({navigation, route}: any) => {
                               onPress={() => {
                                 setFieldValue('manageBy', item.name);
                                 setFieldValue('manageById', item.id);
+                                setFieldValue(
+                                  'issueDate',
+                                  moment().format('DD/MM/YYYY'),
+                                );
                                 closeManageByM();
                               }}
                               key={item.id}

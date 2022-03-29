@@ -38,7 +38,7 @@ const DeviceCard = ({item, fetchDevices}: any) => {
           visible={visible}
           onRequestClose={hideMenu}>
           <MenuItem
-            onPressIn={() => {}}
+            textStyle={{color: '#000'}}
             onPress={() => {
               hideMenu();
               navigation.navigate('AddDevice', {
@@ -49,6 +49,7 @@ const DeviceCard = ({item, fetchDevices}: any) => {
             Update
           </MenuItem>
           <MenuItem
+            textStyle={{color: '#000'}}
             onPress={() => {
               hideMenu();
               Alert.alert('', 'Do you want to delete this device?', [

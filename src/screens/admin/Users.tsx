@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import BackBtn from '../../components/BackBtn';
 import colors from '../../constants/colors';
 import firestore from '@react-native-firebase/firestore';
+import UserCard from '../../components/UserCard';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -35,11 +36,7 @@ const Users = () => {
 
         <View style={{padding: 20}}>
           {users.map((item: any) => {
-            return (
-              <View key={item.id}>
-                <Text>{item.name}</Text>
-              </View>
-            );
+            return <UserCard data={item} key={item.id} />;
           })}
         </View>
       </ScrollView>

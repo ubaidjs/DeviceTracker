@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,19 +6,19 @@ import {
   ScrollView,
   Alert,
   Pressable,
-  Dimensions,
   RefreshControl,
 } from 'react-native';
-import Button from '../components/Button';
 import colors from '../constants/colors';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useFocusEffect} from '@react-navigation/native';
 import {AuthContext} from '../navigation/AppNavigation';
 import Icon from 'react-native-vector-icons/AntDesign';
-
-const {width} = Dimensions.get('screen');
+import DeviceCardUser from '../components/DeviceCardUser';
+import useStore from '../constants/store';
 
 const Home = ({navigation}: any) => {
+  const store = useStore();
   const {signOut} = useContext(AuthContext);
   const [user, setUser] = useState<any>({
     email: '',
@@ -32,19 +32,22 @@ const Home = ({navigation}: any) => {
   const [devices, setDevices] = useState([]);
   const [availableDevice, setAvailableDevice] = useState([]);
   const [users, setUsers] = useState([]);
+  const [userDevice, setUserDevice] = useState([]);
+  const [pendingRequest, setPendingRequest] = useState([]);
 
   useEffect(() => {
-    onRefresh();
-    // fetchCurrentUser();
-    // fetchDevices();
-    // fetchUsers();
+    fetchUsers();
   }, []);
 
   const onRefresh = () => {
-    fetchCurrentUser();
     fetchDevices();
-    fetchUsers();
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCurrentUser();
+    }, []),
+  );
 
   const fetchCurrentUser = async () => {
     const currentUser = auth().currentUser;
@@ -55,10 +58,18 @@ const Home = ({navigation}: any) => {
       .then(snap => {
         snap.forEach(item => {
           setUser(item.data());
+          store.setUser(item.data());
+          if (item.data().role === 'admin') {
+            onRefresh();
+          } else {
+            fetchUserDevice(item.data().id);
+            fetchPendingRequest(item.data().id);
+          }
         });
       });
   };
 
+  //admin
   const fetchDevices = async () => {
     try {
       firestore()
@@ -82,6 +93,7 @@ const Home = ({navigation}: any) => {
   const fetchUsers = async () => {
     const fetchedUsers = await firestore()
       .collection('Users')
+      .orderBy('name')
       .get()
       .then(snap => {
         let temp: any = [];
@@ -90,7 +102,31 @@ const Home = ({navigation}: any) => {
         });
         return temp;
       });
-    setUsers(fetchedUsers);
+    setUsers(fetchedUsers.filter((item: any) => item.role !== 'admin'));
+  };
+
+  const fetchUserDevice = async (id: string) => {
+    const fetchedDevice = await firestore()
+      .collection('Devices')
+      .where('manageById', '==', id)
+      .get();
+    let temp: any = [];
+    fetchedDevice.forEach(item => temp.push(item.data()));
+    setUserDevice(temp);
+  };
+
+  const fetchPendingRequest = async (id: string) => {
+    await firestore()
+      .collection('Requests')
+      .where('userId', '==', id)
+      .get()
+      .then(snapshot => {
+        let temp: any = [];
+        snapshot.forEach(item => {
+          temp.push({...item.data(), docId: item.id});
+        });
+        setPendingRequest(temp);
+      });
   };
 
   const handleSignOut = () => {
@@ -102,12 +138,22 @@ const Home = ({navigation}: any) => {
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
         refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={false} />
+          <RefreshControl
+            onRefresh={() => {
+              if (user.role === 'admin') {
+                onRefresh();
+              } else {
+                fetchUserDevice(user.id);
+                fetchPendingRequest(user.id);
+              }
+            }}
+            refreshing={false}
+          />
         }>
         <View style={{padding: 20}}>
           <View style={styles.header}>
             <View>
-              <Text>{user.name}</Text>
+              <Text style={{color: 'black'}}>{user.name}</Text>
               <Text style={styles.h1}>Dashboard</Text>
             </View>
             <Pressable
@@ -142,6 +188,39 @@ const Home = ({navigation}: any) => {
                   <Text>Total Users: {users.length}</Text>
                 </View>
               </Pressable>
+            </View>
+          )}
+
+          {user.role === 'employee' && (
+            <View style={styles.boxWrap}>
+              <View>
+                {pendingRequest.length !== 0 && (
+                  <Text style={styles.boldText}>Pending Requests</Text>
+                )}
+                {pendingRequest.map((device: any, i) => {
+                  return (
+                    <DeviceCardUser
+                      key={i}
+                      item={device}
+                      type="request"
+                      fetchUserDevice={fetchUserDevice}
+                      fetchPendingRequest={fetchPendingRequest}
+                    />
+                  );
+                })}
+              </View>
+
+              <Text style={styles.boldText}>My Devices</Text>
+              {userDevice.map((item: any) => {
+                return (
+                  <DeviceCardUser
+                    key={item.deviceId}
+                    item={item}
+                    users={users.filter((usr: any) => usr.id !== user.id)}
+                    fetchUserDevice={fetchUserDevice}
+                  />
+                );
+              })}
             </View>
           )}
         </View>
@@ -183,5 +262,22 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flexWrap: 'wrap',
     // justifyContent: 'space-between',
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: colors.lightBlack,
+    marginBottom: 20,
+  },
+  modalView: {
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 10,
+  },
+  modalItem: {
+    backgroundColor: '#f7f7f7',
+    padding: 20,
+    marginBottom: 10,
+    alignItems: 'center',
+    borderRadius: 10,
   },
 });

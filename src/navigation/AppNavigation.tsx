@@ -8,6 +8,7 @@ import Home from '../screens/Home';
 import Devices from '../screens/admin/Devices';
 import Users from '../screens/admin/Users';
 import AddDevice from '../screens/admin/AddDevice';
+import UserList from '../screens/employee/UserList';
 
 const Stack = createNativeStackNavigator();
 export const AuthContext = React.createContext<any>({});
@@ -85,6 +86,7 @@ const AppNavigation = () => {
             <Stack.Screen name="Devices" component={Devices} />
             <Stack.Screen name="Users" component={Users} />
             <Stack.Screen name="AddDevice" component={AddDevice} />
+            <Stack.Screen name="UserList" component={UserList} />
           </>
         )}
       </Stack.Navigator>

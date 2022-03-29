@@ -55,7 +55,7 @@ const Devices = ({navigation}: any) => {
                 data: {},
               });
             }}>
-            <Icon name="pluscircleo" size={26} />
+            <Icon name="pluscircleo" size={26} color="black" />
           </Pressable>
         </View>
         <ScrollView
