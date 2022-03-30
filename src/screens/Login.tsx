@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import {StyleSheet, Text, View, TextInput, Pressable} from 'react-native';
-import BackBtn from '../components/BackBtn';
 import Button from '../components/Button';
 import colors from '../constants/colors';
 import {AuthContext} from '../navigation/AppNavigation';
@@ -33,8 +32,8 @@ const Login = ({navigation}: any) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <BackBtn />
-      <View style={{padding: 20, paddingTop: 0}}>
+      {/* <BackBtn /> */}
+      <View style={{padding: 20}}>
         <Text
           style={{fontSize: 30, color: colors.lightBlack, fontWeight: 'bold'}}>
           Login

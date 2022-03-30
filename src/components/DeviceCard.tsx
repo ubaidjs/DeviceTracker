@@ -1,7 +1,7 @@
 import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import colors from '../constants/colors';
-import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
+import {Menu, MenuItem} from 'react-native-material-menu';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -37,6 +37,16 @@ const DeviceCard = ({item, fetchDevices}: any) => {
           }
           visible={visible}
           onRequestClose={hideMenu}>
+          <MenuItem
+            textStyle={{color: '#000'}}
+            onPress={() => {
+              hideMenu();
+              navigation.navigate('History', {
+                id: item.deviceId,
+              });
+            }}>
+            Assign History
+          </MenuItem>
           <MenuItem
             textStyle={{color: '#000'}}
             onPress={() => {

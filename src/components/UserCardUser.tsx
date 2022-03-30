@@ -25,9 +25,39 @@ const UserCardUser = ({data, deviceData}: any) => {
       pendingRequest: true,
       reqDocId: res.id,
     });
+    sendNotification();
     Toast.show('Request Sent');
     navigation.goBack();
   };
+
+  const sendNotification = async () => {
+    try {
+      const res = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        body: JSON.stringify({
+          data: {
+            title: 'New Device Request',
+            body: `You have a device handover request from ${store.user.name}`,
+          },
+          notification: {
+            foreground: true,
+            title: 'New Device Request',
+            body: `You have a device handover request from ${store.user.name}`,
+          },
+          to: data.pushToken,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:
+            'key=AAAA-fqwYuU:APA91bGrP4I1OA0OlSyHBUqrWaIbx0rk3N952AQjROwzb-LKwsmct6hj1LPvhjOl2qlivGhReAewoUeKBXro7qjp6p-3mMaEHCHYDiaK-ClG-hRMuUjvE8dDf5wjmXxEohLwFA3Rnrhe',
+        },
+      });
+      const json = await res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Pressable
       onPress={() =>

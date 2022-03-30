@@ -16,6 +16,7 @@ import {AuthContext} from '../navigation/AppNavigation';
 import Icon from 'react-native-vector-icons/AntDesign';
 import DeviceCardUser from '../components/DeviceCardUser';
 import useStore from '../constants/store';
+import messaging from '@react-native-firebase/messaging';
 
 const Home = ({navigation}: any) => {
   const store = useStore();
@@ -50,6 +51,7 @@ const Home = ({navigation}: any) => {
   );
 
   const fetchCurrentUser = async () => {
+    let id;
     const currentUser = auth().currentUser;
     await firestore()
       .collection('Users')
@@ -57,6 +59,7 @@ const Home = ({navigation}: any) => {
       .get()
       .then(snap => {
         snap.forEach(item => {
+          id = item.id;
           setUser(item.data());
           store.setUser(item.data());
           if (item.data().role === 'admin') {
@@ -67,6 +70,12 @@ const Home = ({navigation}: any) => {
           }
         });
       });
+
+    const token = await messaging().getToken();
+
+    await firestore().collection('Users').doc(id).update({
+      pushToken: token,
+    });
   };
 
   //admin
@@ -123,7 +132,7 @@ const Home = ({navigation}: any) => {
       .then(snapshot => {
         let temp: any = [];
         snapshot.forEach(item => {
-          temp.push({...item.data(), docId: item.id});
+          temp.push({...item.data(), reqDocId: item.id});
         });
         setPendingRequest(temp);
       });
@@ -218,6 +227,7 @@ const Home = ({navigation}: any) => {
                     item={item}
                     users={users.filter((usr: any) => usr.id !== user.id)}
                     fetchUserDevice={fetchUserDevice}
+                    fetchPendingRequest={fetchPendingRequest}
                   />
                 );
               })}
