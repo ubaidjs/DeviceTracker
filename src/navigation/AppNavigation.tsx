@@ -1,7 +1,7 @@
 import React, {useReducer} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
-import Onboarding from '../screens/Onboarding';
+// import Onboarding from '../screens/Onboarding';
 import Login from '../screens/Login';
 import SignUp from '../screens/SignUp';
 import Home from '../screens/Home';
@@ -76,7 +76,7 @@ const AppNavigation = () => {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {state.userToken == null ? (
           <>
-            <Stack.Screen name="Onboarding" component={Onboarding} />
+            {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="SignUp" component={SignUp} />
           </>

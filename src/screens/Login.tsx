@@ -7,8 +7,7 @@ import {AuthContext} from '../navigation/AppNavigation';
 import Toast from 'react-native-simple-toast';
 import auth from '@react-native-firebase/auth';
 
-const Login = ({navigation, route}: any) => {
-  const {role} = route.params;
+const Login = ({navigation}: any) => {
   const {signIn} = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,7 +39,6 @@ const Login = ({navigation, route}: any) => {
           style={{fontSize: 30, color: colors.lightBlack, fontWeight: 'bold'}}>
           Login
         </Text>
-
         <View style={{marginTop: 40}}>
           <TextInput
             placeholder="Email"
@@ -66,13 +64,11 @@ const Login = ({navigation, route}: any) => {
             onPress={handleLogin}
             loading={loading}
           />
-          {role === 'employee' && (
-            <Pressable
-              style={{margin: 40, alignSelf: 'center'}}
-              onPress={() => navigation.navigate('SignUp', {role})}>
-              <Text style={styles.create}>Create Account</Text>
-            </Pressable>
-          )}
+          <Pressable
+            style={{margin: 40, alignSelf: 'center'}}
+            onPress={() => navigation.navigate('SignUp')}>
+            <Text style={styles.create}>Create Account</Text>
+          </Pressable>
         </View>
       </View>
     </View>

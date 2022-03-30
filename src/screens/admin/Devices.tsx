@@ -58,19 +58,19 @@ const Devices = ({navigation}: any) => {
             <Icon name="pluscircleo" size={26} color="black" />
           </Pressable>
         </View>
+        <View>
+          <TextInput
+            onChangeText={setTerm}
+            placeholder="Search"
+            style={styles.search}
+          />
+        </View>
         <ScrollView
+          contentContainerStyle={{paddingBottom: 200}}
           refreshControl={
             <RefreshControl onRefresh={fetchDevices} refreshing={false} />
           }>
           <View style={{marginTop: 20}}>
-            <View>
-              <TextInput
-                onChangeText={setTerm}
-                placeholder="Search"
-                style={styles.search}
-              />
-            </View>
-
             {devices
               .filter((item: any) => {
                 if (

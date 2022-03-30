@@ -24,8 +24,7 @@ const signupSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const SignUp = ({navigation, route}: any) => {
-  const {role} = route.params;
+const SignUp = () => {
   const {signIn} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +45,7 @@ const SignUp = ({navigation, route}: any) => {
               phone: values.phone,
               email: values.email.trim(),
               password: values.password,
-              role: role,
+              role: 'employee',
               createdAt: firestore.Timestamp.now(),
             })
             .then(() => {
