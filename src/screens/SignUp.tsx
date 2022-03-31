@@ -101,6 +101,7 @@ const SignUp = () => {
                     onChangeText={handleChange('name')}
                     onBlur={handleBlur('name')}
                     value={values.name}
+                    placeholderTextColor="gray"
                   />
                   <View style={{marginBottom: 20}}>
                     {errors.name && (
@@ -115,6 +116,7 @@ const SignUp = () => {
                     value={values.phone}
                     keyboardType="number-pad"
                     maxLength={10}
+                    placeholderTextColor="gray"
                   />
                   <View style={{marginBottom: 20}}>
                     {errors.phone && (
@@ -131,6 +133,7 @@ const SignUp = () => {
                     autoCorrect={false}
                     autoCapitalize="none"
                     autoComplete="email"
+                    placeholderTextColor="gray"
                   />
                   <View style={{marginBottom: 20}}>
                     {errors.email && (
@@ -147,6 +150,7 @@ const SignUp = () => {
                     autoCorrect={false}
                     autoCapitalize="none"
                     autoComplete="off"
+                    placeholderTextColor="gray"
                   />
                   <View style={{marginBottom: 20}}>
                     {errors.password && (

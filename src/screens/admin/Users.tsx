@@ -19,7 +19,9 @@ const Users = () => {
       .then(snap => {
         let temp: any = [];
         snap.forEach(item => {
-          temp.push(item.data());
+          if (item.data().role !== 'admin') {
+            temp.push(item.data());
+          }
         });
         return temp;
       });

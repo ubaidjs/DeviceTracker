@@ -1,4 +1,5 @@
 import React, {useReducer} from 'react';
+import {View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 // import Onboarding from '../screens/Onboarding';
@@ -71,6 +72,10 @@ const AppNavigation = () => {
     }),
     [],
   );
+
+  if (state.isLoading) {
+    return <View />;
+  }
 
   return (
     <AuthContext.Provider value={authContext}>

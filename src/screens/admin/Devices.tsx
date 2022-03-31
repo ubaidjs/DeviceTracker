@@ -63,6 +63,7 @@ const Devices = ({navigation}: any) => {
             onChangeText={setTerm}
             placeholder="Search"
             style={styles.search}
+            placeholderTextColor="gray"
           />
         </View>
         <ScrollView

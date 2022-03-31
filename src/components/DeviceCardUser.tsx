@@ -67,6 +67,7 @@ const DeviceCardUser = ({
       manageBy: store.user.name,
       manageById: store.user.id,
       updatedAt: firestore.Timestamp.now(),
+      issueDate: new Date().toLocaleDateString(),
     });
     fetchUserDevice(store.user.id);
     fetchPendingRequest(store.user.id);

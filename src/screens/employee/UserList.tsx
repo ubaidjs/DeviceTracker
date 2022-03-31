@@ -16,6 +16,10 @@ const UserList = ({route, navigation}: any) => {
           </View>
         </View>
 
+        <Text style={{margin: 20, marginTop: 0}}>
+          Please select a user to assign this device
+        </Text>
+
         <View style={{paddingHorizontal: 20}}>
           {users.map((item: any) => {
             return (

@@ -47,6 +47,7 @@ const Login = ({navigation}: any) => {
             autoCapitalize="none"
             autoComplete="email"
             onChangeText={setEmail}
+            placeholderTextColor="gray"
           />
           <TextInput
             placeholder="Password"
@@ -56,6 +57,7 @@ const Login = ({navigation}: any) => {
             autoCapitalize="none"
             autoComplete="off"
             onChangeText={setPassword}
+            placeholderTextColor="gray"
           />
           <Button
             containerStyle={{marginTop: 20}}
