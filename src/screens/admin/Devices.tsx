@@ -45,7 +45,7 @@ const Devices = ({navigation}: any) => {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <BackBtn />
-      <View style={{padding: 20, paddingTop: 0}}>
+      <View style={{padding: 0, paddingTop: 0}}>
         <View style={styles.header}>
           <Text style={styles.h1}>Devices</Text>
           <Pressable
@@ -71,7 +71,7 @@ const Devices = ({navigation}: any) => {
           refreshControl={
             <RefreshControl onRefresh={fetchDevices} refreshing={false} />
           }>
-          <View style={{marginTop: 20}}>
+          <View style={{paddingHorizontal: 20}}>
             {devices
               .filter((item: any) => {
                 if (
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   card: {
     backgroundColor: '#f7f7f7',
@@ -135,5 +136,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingLeft: 10,
     marginBottom: 20,
+    marginHorizontal: 20,
   },
 });

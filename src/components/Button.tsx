@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import colors from '../constants/colors';
+import fonts from '../constants/fonts';
 
 interface Props {
   onPress: () => void;
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
   btn: {
     height: 45,
     backgroundColor: colors.primary,
-    borderRadius: 5,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     // marginTop: 50,
@@ -56,7 +57,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   btnTxt: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
+    fontFamily: fonts.bold,
   },
 });

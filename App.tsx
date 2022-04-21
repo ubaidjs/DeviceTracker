@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {SafeAreaView, Platform} from 'react-native';
+import {SafeAreaView, Platform, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import AppNavigation from './src/navigation/AppNavigation';
 import messaging from '@react-native-firebase/messaging';
@@ -48,11 +48,13 @@ const App = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <NavigationContainer>
-        <AppNavigation />
-      </NavigationContainer>
-    </SafeAreaView>
+    <View style={{flex: 1, backgroundColor: '#EEF1F6'}}>
+      <SafeAreaView style={{flex: 1}}>
+        <NavigationContainer>
+          <AppNavigation />
+        </NavigationContainer>
+      </SafeAreaView>
+    </View>
   );
 };
 

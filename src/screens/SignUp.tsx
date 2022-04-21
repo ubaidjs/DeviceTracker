@@ -9,7 +9,8 @@ import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
 import makeId from '../constants/makeId';
 import firestore from '@react-native-firebase/firestore';
-import {AuthContext} from '../navigation/AppNavigation';
+import AuthContext from '../navigation/AuthContext';
+import fonts from '../constants/fonts';
 
 const signupSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -24,7 +25,7 @@ const signupSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const SignUp = () => {
+const SignUp = ({navigation}: any) => {
   const {signIn} = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -65,17 +66,18 @@ const SignUp = () => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <BackBtn />
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
+      {/* <BackBtn /> */}
       <ScrollView>
         <View style={{padding: 20, paddingTop: 0}}>
+          <Text style={styles.welcome}>Welcome,</Text>
           <Text
             style={{
-              fontSize: 30,
-              color: colors.lightBlack,
-              fontWeight: 'bold',
+              fontSize: 26,
+              color: colors.primary,
+              fontFamily: fonts.bold,
             }}>
-            Create Account
+            Signup to get started
           </Text>
 
           <Formik
@@ -169,6 +171,14 @@ const SignUp = () => {
           </Formik>
         </View>
       </ScrollView>
+      <Text style={styles.createAcc}>
+        Already have an account?{' '}
+        <Text
+          onPress={() => navigation.navigate('Login')}
+          style={{color: colors.primary}}>
+          Login Now
+        </Text>
+      </Text>
     </View>
   );
 };
@@ -178,8 +188,8 @@ export default SignUp;
 const styles = StyleSheet.create({
   input: {
     backgroundColor: '#f7f7f7',
-    borderRadius: 10,
-    paddingLeft: 10,
+    borderRadius: 50,
+    paddingLeft: 20,
     height: 50,
   },
   error: {
@@ -188,5 +198,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 12,
     color: 'red',
+  },
+  welcome: {
+    fontSize: 26,
+    marginTop: 20,
+    fontFamily: fonts.regular,
+    color: colors.lightBlack,
+  },
+  createAcc: {
+    marginBottom: 30,
+    textAlign: 'center',
+    fontSize: 17,
+    fontFamily: fonts.regular,
   },
 });

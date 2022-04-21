@@ -8,17 +8,18 @@ import {
   Pressable,
   RefreshControl,
 } from 'react-native';
-import colors from '../constants/colors';
+import colors from '../../constants/colors';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useFocusEffect} from '@react-navigation/native';
-import {AuthContext} from '../navigation/AppNavigation';
+import AuthContext from '../../navigation/AuthContext';
 import Icon from 'react-native-vector-icons/AntDesign';
-import DeviceCardUser from '../components/DeviceCardUser';
-import useStore from '../constants/store';
+import DeviceCardUser from '../../components/DeviceCardUser';
+import useStore from '../../constants/store';
 import messaging from '@react-native-firebase/messaging';
+import Header from '../../components/Header';
 
-const Home = ({navigation}: any) => {
+const Home = () => {
   const store = useStore();
   const {signOut} = useContext(AuthContext);
   const [user, setUser] = useState<any>({
@@ -29,23 +30,13 @@ const Home = ({navigation}: any) => {
     phone: '',
     role: '',
   });
-
-  const [devices, setDevices] = useState([]);
-  const [availableDevice, setAvailableDevice] = useState([]);
   const [users, setUsers] = useState([]);
   const [userDevice, setUserDevice] = useState([]);
   const [pendingRequest, setPendingRequest] = useState([]);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const onRefresh = () => {
-    fetchDevices();
-  };
-
   useFocusEffect(
     useCallback(() => {
+      fetchUsers();
       fetchCurrentUser();
     }, []),
   );
@@ -62,12 +53,8 @@ const Home = ({navigation}: any) => {
           id = item.id;
           setUser(item.data());
           store.setUser(item.data());
-          if (item.data().role === 'admin') {
-            onRefresh();
-          } else {
-            fetchUserDevice(item.data().id);
-            fetchPendingRequest(item.data().id);
-          }
+          fetchUserDevice(item.data().id);
+          fetchPendingRequest(item.data().id);
         });
       });
 
@@ -76,27 +63,6 @@ const Home = ({navigation}: any) => {
     await firestore().collection('Users').doc(id).update({
       pushToken: token,
     });
-  };
-
-  //admin
-  const fetchDevices = async () => {
-    try {
-      firestore()
-        .collection('Devices')
-        .get()
-        .then(snapshot => {
-          let temp: any = [];
-          snapshot.forEach(item => {
-            temp.push(item.data());
-          });
-          setDevices(temp);
-          setAvailableDevice(
-            temp.filter((item: any) => item.manageById === ''),
-          );
-        });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const fetchUsers = async () => {
@@ -143,21 +109,18 @@ const Home = ({navigation}: any) => {
     auth().signOut();
   };
 
+  const onRefresh = () => {
+    fetchUserDevice(user.id);
+    fetchPendingRequest(user.id);
+    fetchUsers();
+  };
+
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
+      <Header title="My Devices" />
       <ScrollView
         refreshControl={
-          <RefreshControl
-            onRefresh={() => {
-              if (user.role === 'admin') {
-                onRefresh();
-              } else {
-                fetchUserDevice(user.id);
-                fetchPendingRequest(user.id);
-              }
-            }}
-            refreshing={false}
-          />
+          <RefreshControl onRefresh={onRefresh} refreshing={false} />
         }>
         <View style={{padding: 20}}>
           <View style={styles.header}>
@@ -175,30 +138,6 @@ const Home = ({navigation}: any) => {
               <Icon name="logout" size={25} color="orangered" />
             </Pressable>
           </View>
-          {user.role === 'admin' && (
-            <View style={styles.boxWrap}>
-              <Pressable
-                style={styles.box}
-                onPress={() => navigation.navigate('Devices')}>
-                <Icon name="mobile1" size={25} color={colors.lightBlack} />
-                <View style={{marginLeft: 10}}>
-                  <Text style={styles.boxTitle}>Devices</Text>
-                  <Text>Available devices: {availableDevice.length}</Text>
-                  <Text>Total Devices: {devices.length}</Text>
-                </View>
-              </Pressable>
-
-              <Pressable
-                style={styles.box}
-                onPress={() => navigation.navigate('Users')}>
-                <Icon name="user" size={25} color={colors.lightBlack} />
-                <View style={{marginLeft: 10}}>
-                  <Text style={styles.boxTitle}>Users</Text>
-                  <Text>Total Users: {users.length}</Text>
-                </View>
-              </Pressable>
-            </View>
-          )}
 
           {user.role === 'employee' && (
             <View style={styles.boxWrap}>
@@ -219,7 +158,6 @@ const Home = ({navigation}: any) => {
                 })}
               </View>
 
-              <Text style={styles.boldText}>My Devices</Text>
               {userDevice.map((item: any) => {
                 return (
                   <DeviceCardUser
@@ -252,32 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  box: {
-    // width: width / 2 - 30,
-    backgroundColor: '#f7f7f7',
-    padding: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  boxTitle: {
-    color: colors.lightBlack,
-    fontWeight: 'bold',
-    fontSize: 17,
-    marginBottom: 5,
-  },
-  boxWrap: {
-    marginTop: 40,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
-    // justifyContent: 'space-between',
-  },
-  boldText: {
-    fontWeight: 'bold',
-    color: colors.lightBlack,
-    marginBottom: 20,
-  },
+
   modalView: {
     backgroundColor: '#fff',
     padding: 15,
@@ -289,5 +202,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
     borderRadius: 10,
+  },
+  boxWrap: {
+    marginTop: 40,
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
+    // justifyContent: 'space-between',
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: colors.lightBlack,
+    marginBottom: 20,
   },
 });

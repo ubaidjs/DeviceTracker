@@ -5,46 +5,21 @@ import auth from '@react-native-firebase/auth';
 // import Onboarding from '../screens/Onboarding';
 import Login from '../screens/Login';
 import SignUp from '../screens/SignUp';
-import Home from '../screens/Home';
 import Devices from '../screens/admin/Devices';
 import Users from '../screens/admin/Users';
 import AddDevice from '../screens/admin/AddDevice';
 import UserList from '../screens/employee/UserList';
 import History from '../screens/admin/History';
+import AdminHome from '../screens/admin/AdminHome';
+import AuthContext, {authReducer, initialState} from './AuthContext';
+import firestore from '@react-native-firebase/firestore';
+import TabNavigation from './TabNavigation';
 
 const Stack = createNativeStackNavigator();
-export const AuthContext = React.createContext<any>({});
+// export const AuthContext = React.createContext<any>({});
 
 const AppNavigation = () => {
-  const [state, dispatch] = useReducer(
-    (prevState: any, action: any) => {
-      switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            isSignout: false,
-            userToken: action.token,
-          };
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-          };
-      }
-    },
-    {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    },
-  );
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
@@ -53,7 +28,19 @@ const AppNavigation = () => {
       if (currentUser === null) {
         dispatch({type: 'RESTORE_TOKEN', token: null});
       } else {
-        dispatch({type: 'RESTORE_TOKEN', token: 'token'});
+        await firestore()
+          .collection('Users')
+          .where('email', '==', currentUser?.email)
+          .get()
+          .then(snap => {
+            snap.forEach(item => {
+              dispatch({
+                type: 'RESTORE_TOKEN',
+                token: 'token',
+                currentUser: item.data(),
+              });
+            });
+          });
       }
     };
 
@@ -62,12 +49,20 @@ const AppNavigation = () => {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async () => {
-        dispatch({type: 'SIGN_IN', token: 'dummy-auth-token'});
+      signIn: async (currentUser: any) => {
+        dispatch({
+          type: 'SIGN_IN',
+          token: 'dummy-auth-token',
+          currentUser: currentUser,
+        });
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
-      signUp: async () => {
-        dispatch({type: 'SIGN_IN', token: 'dummy-auth-token'});
+      signUp: async (currentUser: any) => {
+        dispatch({
+          type: 'SIGN_IN',
+          token: 'dummy-auth-token',
+          currentUser: currentUser,
+        });
       },
     }),
     [],
@@ -88,7 +83,11 @@ const AppNavigation = () => {
           </>
         ) : (
           <>
-            <Stack.Screen name="Home" component={Home} />
+            {state.currentUser.role === 'admin' ? (
+              <Stack.Screen name="Home" component={AdminHome} />
+            ) : (
+              <Stack.Screen name="Home" component={TabNavigation} />
+            )}
             <Stack.Screen name="Devices" component={Devices} />
             <Stack.Screen name="Users" component={Users} />
             <Stack.Screen name="AddDevice" component={AddDevice} />

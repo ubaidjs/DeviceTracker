@@ -36,6 +36,7 @@ const AddDevice = ({navigation, route}: any) => {
   const [manageByM, setManageByM] = useState(false);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -249,26 +250,39 @@ const AddDevice = ({navigation, route}: any) => {
                   onBackdropPress={closeManageByM}
                   onBackButtonPress={closeManageByM}>
                   <View style={styles.modalView}>
+                    <View>
+                      <TextInput
+                        onChangeText={setSearch}
+                        placeholder="Search"
+                        style={styles.search}
+                      />
+                    </View>
                     <ScrollView>
                       <View>
-                        {users.map((item: any) => {
-                          return (
-                            <Pressable
-                              onPress={() => {
-                                setFieldValue('manageBy', item.name);
-                                setFieldValue('manageById', item.id);
-                                setFieldValue(
-                                  'issueDate',
-                                  moment().format('DD/MM/YYYY'),
-                                );
-                                closeManageByM();
-                              }}
-                              key={item.id}
-                              style={styles.modalItem}>
-                              <Text>{item.name}</Text>
-                            </Pressable>
-                          );
-                        })}
+                        {users
+                          .filter((item: any) =>
+                            item.name
+                              .toLowerCase()
+                              .includes(search.toLowerCase()),
+                          )
+                          .map((item: any) => {
+                            return (
+                              <Pressable
+                                onPress={() => {
+                                  setFieldValue('manageBy', item.name);
+                                  setFieldValue('manageById', item.id);
+                                  setFieldValue(
+                                    'issueDate',
+                                    moment().format('DD/MM/YYYY'),
+                                  );
+                                  closeManageByM();
+                                }}
+                                key={item.id}
+                                style={styles.modalItem}>
+                                <Text>{item.name}</Text>
+                              </Pressable>
+                            );
+                          })}
                       </View>
                     </ScrollView>
                   </View>
@@ -330,5 +344,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
     borderRadius: 10,
+  },
+  search: {
+    backgroundColor: '#f7f7f7',
+    height: 40,
+    borderRadius: 50,
+    paddingLeft: 10,
+    marginBottom: 20,
   },
 });
