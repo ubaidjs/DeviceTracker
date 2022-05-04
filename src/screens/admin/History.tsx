@@ -6,10 +6,11 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import BackBtn from '../../components/BackBtn';
 import colors from '../../constants/colors';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
+import Header from '../../components/Header';
+import fonts from '../../constants/fonts';
 
 const History = ({route}: any) => {
   const {id} = route.params;
@@ -39,11 +40,8 @@ const History = ({route}: any) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <BackBtn />
-      <View style={{padding: 20, paddingTop: 0}}>
-        <Text style={styles.h1}>Assign History</Text>
-      </View>
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
+      <Header title="Assign History" showBack />
       <ScrollView>
         <View style={{padding: 20}}>
           {loading && <ActivityIndicator size="large" color="gray" />}
@@ -92,11 +90,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   grayText: {
-    fontWeight: 'bold',
+    fontFamily: fonts.bold,
     color: 'gray',
   },
   blackText: {
-    fontWeight: 'bold',
+    fontFamily: fonts.bold,
+    color: 'black',
+    fontSize: 18,
+  },
+  blueText: {
+    fontFamily: fonts.bold,
     color: 'black',
     fontSize: 18,
   },

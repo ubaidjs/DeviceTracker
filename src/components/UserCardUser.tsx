@@ -88,14 +88,12 @@ export default UserCardUser;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#ffffff',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
   },
   deviceName: {
     fontWeight: '500',
-    color: colors.lightBlack,
+    color: colors.primary,
     fontSize: 18,
     marginBottom: 3,
   },

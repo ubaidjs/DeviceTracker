@@ -16,7 +16,6 @@ import useStore from '../constants/store';
 
 const DeviceCardUser = ({
   item,
-  users,
   type,
   fetchUserDevice,
   fetchPendingRequest,
@@ -113,7 +112,6 @@ const DeviceCardUser = ({
                 <Pressable
                   onPress={() => {
                     navigation.navigate('UserList', {
-                      users: users,
                       deviceData: item,
                     });
                   }}>
@@ -125,19 +123,19 @@ const DeviceCardUser = ({
         )}
       </View>
       <View style={styles.row}>
-        <Icon name="link" color={colors.lightBlack} size={20} />
+        <Feather name="hash" color={colors.primary} size={20} />
         <Text style={{color: colors.lightBlack, marginLeft: 10}}>
           {item.serialNo}
         </Text>
       </View>
       <View style={styles.row}>
-        <Icon name="user" color={colors.lightBlack} size={20} />
+        <Icon name="user" color={colors.primary} size={20} />
         <Text style={{color: colors.lightBlack, marginLeft: 10}}>
           {item.manageBy}
         </Text>
       </View>
       <View style={styles.row}>
-        <Icon name="calendar" color={colors.lightBlack} size={20} />
+        <Icon name="calendar" color={colors.primary} size={20} />
         <Text style={{color: colors.lightBlack, marginLeft: 10}}>
           {item.issueDate}
         </Text>
@@ -155,14 +153,14 @@ export default DeviceCardUser;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 20,
     marginBottom: 20,
   },
   deviceName: {
     fontWeight: '500',
-    color: colors.lightBlack,
+    color: colors.primary,
     fontSize: 18,
     marginBottom: 3,
     flex: 1,

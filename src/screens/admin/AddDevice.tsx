@@ -17,6 +17,7 @@ import Button from '../../components/Button';
 import makeId from '../../constants/makeId';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
+import Header from '../../components/Header';
 
 const deviceSchema = yup.object().shape({
   deviceName: yup.string().required('Device name is required'),
@@ -95,15 +96,9 @@ const AddDevice = ({navigation, route}: any) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <BackBtn />
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
+      <Header title="Add Device" showBack />
       <ScrollView>
-        <View style={{padding: 20, paddingTop: 0}}>
-          <View style={styles.header}>
-            <Text style={styles.h1}>{type} Device</Text>
-          </View>
-        </View>
-
         <View style={{padding: 20}}>
           <Formik
             validationSchema={deviceSchema}
@@ -206,6 +201,7 @@ const AddDevice = ({navigation, route}: any) => {
                   label="Submit"
                   onPress={handleSubmit}
                   loading={loading}
+                  containerStyle={{marginTop: 20}}
                 />
 
                 <Modal
@@ -310,16 +306,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   input: {
-    backgroundColor: '#f7f7f7',
-    borderRadius: 10,
-    paddingLeft: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 50,
+    paddingLeft: 15,
     height: 50,
   },
 
   pressInput: {
-    backgroundColor: '#f7f7f7',
-    borderRadius: 10,
-    paddingLeft: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 50,
+    paddingLeft: 15,
     height: 50,
     justifyContent: 'center',
   },

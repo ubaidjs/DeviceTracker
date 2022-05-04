@@ -8,18 +8,12 @@ import AuthContext from '../../navigation/AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import Header from '../../components/Header';
+import fonts from '../../constants/fonts';
 
 const AdminHome = ({navigation}: any) => {
   const store = useStore();
   const {signOut} = useContext(AuthContext);
-  const [user, setUser] = useState<any>({
-    email: '',
-    id: '',
-    name: '',
-    password: '',
-    phone: '',
-    role: '',
-  });
   const [users, setUsers] = useState([]);
   const [availableDevice, setAvailableDevice] = useState([]);
   const [devices, setDevices] = useState([]);
@@ -66,7 +60,6 @@ const AdminHome = ({navigation}: any) => {
       .then(snap => {
         snap.forEach(item => {
           id = item.id;
-          setUser(item.data());
           store.setUser(item.data());
           onRefresh();
         });
@@ -99,45 +92,56 @@ const AdminHome = ({navigation}: any) => {
     auth().signOut();
   };
 
+  const signOutAlert = () => {
+    Alert.alert('', 'Are you sure you want to log out?', [
+      {text: 'Yes', onPress: handleSignOut},
+      {text: 'Cancel', onPress: () => {}},
+    ]);
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: colors.bg}}>
-      <View style={styles.header}>
-        <View>
-          <Text style={{color: 'black'}}>{user.name}</Text>
-          <Text style={styles.h1}>Dashboard</Text>
-        </View>
-        <Pressable
-          onPress={() => {
-            Alert.alert('', 'Are you sure you want to log out?', [
-              {text: 'Yes', onPress: handleSignOut},
-              {text: 'Cancel', onPress: () => {}},
-            ]);
-          }}>
-          <Icon name="logout" size={25} color="orangered" />
-        </Pressable>
-      </View>
-      <View style={styles.boxWrap}>
+      <Header title="Admin Dashboard" />
+      <View style={{padding: 20, flex: 1}}>
         <Pressable
           style={styles.box}
           onPress={() => navigation.navigate('Devices')}>
-          <Icon name="mobile1" size={25} color={colors.lightBlack} />
+          <View style={styles.iconWrap}>
+            <Icon name="mobile1" size={40} color="#fff" />
+          </View>
           <View style={{marginLeft: 10}}>
             <Text style={styles.boxTitle}>Devices</Text>
-            <Text>Available devices: {availableDevice.length}</Text>
-            <Text>Total Devices: {devices.length}</Text>
+            <Text style={styles.grayText}>
+              Available devices:{' '}
+              <Text style={{color: colors.primary}}>
+                {availableDevice.length}
+              </Text>
+            </Text>
+            <Text style={styles.grayText}>
+              Total Devices:{' '}
+              <Text style={{color: colors.primary}}>{devices.length}</Text>
+            </Text>
           </View>
         </Pressable>
 
         <Pressable
           style={styles.box}
           onPress={() => navigation.navigate('Users')}>
-          <Icon name="user" size={25} color={colors.lightBlack} />
+          <View style={styles.iconWrap}>
+            <Icon name="user" size={40} color="#fff" />
+          </View>
           <View style={{marginLeft: 10}}>
             <Text style={styles.boxTitle}>Users</Text>
-            <Text>Total Users: {users.length}</Text>
+            <Text style={styles.grayText}>
+              Total Users:{' '}
+              <Text style={{color: colors.primary}}>{users.length}</Text>
+            </Text>
           </View>
         </Pressable>
       </View>
+      <Pressable onPress={signOutAlert} style={styles.logout}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </Pressable>
     </View>
   );
 };
@@ -146,29 +150,46 @@ export default AdminHome;
 
 const styles = StyleSheet.create({
   box: {
-    // width: width / 2 - 30,
-    backgroundColor: '#f7f7f7',
-    padding: 20,
-    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    padding: 10,
+    borderRadius: 100,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
   boxTitle: {
-    color: colors.lightBlack,
-    fontWeight: 'bold',
-    fontSize: 17,
+    color: colors.primary,
+    fontSize: 22,
     marginBottom: 5,
-  },
-  boxWrap: {
-    marginTop: 40,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
-    // justifyContent: 'space-between',
+    fontFamily: fonts.bold,
   },
   boldText: {
     fontWeight: 'bold',
     color: colors.lightBlack,
     marginBottom: 20,
+  },
+  grayText: {
+    color: '#9F9EAB',
+    fontFamily: fonts.bold,
+    fontSize: 17,
+  },
+  iconWrap: {
+    height: 80,
+    width: 80,
+    backgroundColor: '#C2E9FB',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logout: {
+    backgroundColor: 'orangered',
+    padding: 12,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    borderRadius: 50,
+  },
+  logoutText: {
+    color: '#fff',
+    fontFamily: fonts.bold,
   },
 });
