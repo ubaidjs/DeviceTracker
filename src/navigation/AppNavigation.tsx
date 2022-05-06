@@ -3,8 +3,9 @@ import {View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 // import Onboarding from '../screens/Onboarding';
-import Login from '../screens/Login';
-import SignUp from '../screens/SignUp';
+import Login from '../screens/auth/Login';
+import SignUp from '../screens/auth/SignUp';
+import ForgotPass from '../screens/auth/ForgotPass';
 import Devices from '../screens/admin/Devices';
 import Users from '../screens/admin/Users';
 import AddDevice from '../screens/admin/AddDevice';
@@ -80,6 +81,7 @@ const AppNavigation = () => {
             {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="ForgotPass" component={ForgotPass} />
           </>
         ) : (
           <>
@@ -93,6 +95,7 @@ const AppNavigation = () => {
             <Stack.Screen name="AddDevice" component={AddDevice} />
             <Stack.Screen name="UserList" component={UserList} />
             <Stack.Screen name="History" component={History} />
+            <Stack.Screen name="ForgotPass" component={ForgotPass} />
           </>
         )}
       </Stack.Navigator>

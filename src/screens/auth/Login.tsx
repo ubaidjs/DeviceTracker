@@ -1,11 +1,11 @@
 import React, {useContext, useState} from 'react';
 import {StyleSheet, Text, View, TextInput, Pressable} from 'react-native';
-import Button from '../components/Button';
-import colors from '../constants/colors';
-import AuthContext from '../navigation/AuthContext';
+import Button from '../../components/Button';
+import colors from '../../constants/colors';
+import AuthContext from '../../navigation/AuthContext';
 import Toast from 'react-native-simple-toast';
 import auth from '@react-native-firebase/auth';
-import fonts from '../constants/fonts';
+import fonts from '../../constants/fonts';
 import firestore from '@react-native-firebase/firestore';
 
 const Login = ({navigation}: any) => {
@@ -68,14 +68,16 @@ const Login = ({navigation}: any) => {
             onChangeText={setPassword}
             placeholderTextColor="gray"
           />
-          <Text
-            style={{
-              textAlign: 'right',
-              fontFamily: fonts.bold,
-              color: colors.primary,
-            }}>
-            Forgot Password
-          </Text>
+          <Pressable onPress={() => navigation.navigate('ForgotPass')}>
+            <Text
+              style={{
+                textAlign: 'right',
+                fontFamily: fonts.bold,
+                color: colors.primary,
+              }}>
+              Forgot Password
+            </Text>
+          </Pressable>
           <Button
             containerStyle={{marginTop: 20}}
             label="Login"
@@ -103,7 +105,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#ffffff',
     marginBottom: 20,
     borderRadius: 30,
     paddingLeft: 20,

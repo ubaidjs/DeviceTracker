@@ -1,16 +1,15 @@
 import React, {useState, useContext} from 'react';
 import {StyleSheet, Text, TextInput, View, ScrollView} from 'react-native';
-import BackBtn from '../components/BackBtn';
-import Button from '../components/Button';
-import colors from '../constants/colors';
+import Button from '../../components/Button';
+import colors from '../../constants/colors';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
-import makeId from '../constants/makeId';
+import makeId from '../../constants/makeId';
 import firestore from '@react-native-firebase/firestore';
-import AuthContext from '../navigation/AuthContext';
-import fonts from '../constants/fonts';
+import AuthContext from '../../navigation/AuthContext';
+import fonts from '../../constants/fonts';
 
 const signupSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -31,6 +30,15 @@ const SignUp = ({navigation}: any) => {
 
   const handleSignUp = async (values: any) => {
     const id = makeId(20);
+    const userObj = {
+      id: id,
+      name: values.name,
+      phone: values.phone,
+      email: values.email.trim(),
+      password: values.password,
+      role: 'employee',
+      createdAt: firestore.Timestamp.now(),
+    };
     try {
       setLoading(true);
       auth()
@@ -40,20 +48,17 @@ const SignUp = ({navigation}: any) => {
           firestore()
             .collection('Users')
             .doc(id)
-            .set({
-              id: id,
-              name: values.name,
-              phone: values.phone,
-              email: values.email.trim(),
-              password: values.password,
-              role: 'employee',
-              createdAt: firestore.Timestamp.now(),
-            })
+            .set(userObj)
             .then(() => {
               console.log('User added!');
+
+              setLoading(false);
+              signIn(userObj);
+            })
+            .catch(err => {
+              setLoading(false);
+              console.log(err);
             });
-          setLoading(false);
-          signIn();
         })
         .catch(error => {
           setLoading(false);

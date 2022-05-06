@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import Button from '../components/Button';
-import colors from '../constants/colors';
+import Button from '../../components/Button';
+import colors from '../../constants/colors';
 // import auth from '@react-native-firebase/auth';
 
 const Onboarding = ({navigation}: any) => {

@@ -9,6 +9,7 @@ import useStore from '../../constants/store';
 import messaging from '@react-native-firebase/messaging';
 import Header from '../../components/Header';
 import SearchBar from '../../components/SearchBar';
+import fonts from '../../constants/fonts';
 
 const Home = () => {
   const store = useStore();
@@ -89,7 +90,7 @@ const Home = () => {
         }>
         <View style={{padding: 20}}>
           {user.role === 'employee' && (
-            <View style={styles.boxWrap}>
+            <View>
               <View>
                 {pendingRequest.length !== 0 && (
                   <Text style={styles.boldText}>Pending Requests</Text>
@@ -130,6 +131,10 @@ const Home = () => {
                     />
                   );
                 })}
+
+              {userDevice.length === 0 && !loading && (
+                <Text style={styles.placeholder}>You dont have any device</Text>
+              )}
             </View>
           )}
         </View>
@@ -164,15 +169,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
-  boxWrap: {
-    // marginTop: 40,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
-    // justifyContent: 'space-between',
-  },
   boldText: {
     fontWeight: 'bold',
     color: colors.lightBlack,
     marginBottom: 20,
+  },
+  placeholder: {
+    fontSize: 18,
+    color: 'gray',
+    fontFamily: fonts.bold,
+    textAlign: 'center',
+    marginTop: 40,
   },
 });

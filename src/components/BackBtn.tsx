@@ -12,6 +12,7 @@ const BackBtn = () => {
       style={{
         padding: 10,
         paddingVertical: 20,
+        paddingBottom: 0,
         alignSelf: 'flex-start',
       }}>
       <Entypo name="chevron-small-left" size={35} color={colors.lightBlack} />

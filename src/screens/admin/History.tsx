@@ -50,12 +50,12 @@ const History = ({route}: any) => {
               <View
                 key={i}
                 style={{
-                  borderLeftWidth: 1,
-                  borderLeftColor: 'gray',
+                  borderLeftWidth: 5,
+                  borderLeftColor: 'lightgray',
                   padding: 20,
                 }}>
                 <View style={styles.dot} />
-                <Text style={{fontWeight: 'bold', color: '#000'}}>
+                <Text style={{fontWeight: 'bold', color: colors.primary}}>
                   {moment(item.acceptDate).format('DD/MM/YY hh:mm A')}
                 </Text>
                 <View style={styles.row}>
@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
     height: 10,
     width: 10,
     borderRadius: 40,
-    backgroundColor: colors.lightBlack,
+    backgroundColor: colors.primary,
     position: 'absolute',
-    left: -5,
+    left: -7,
     top: 23,
   },
 });

@@ -21,7 +21,7 @@ const Option = ({icon, label, onPress}: any) => {
   );
 };
 
-const Account = () => {
+const Account = ({navigation}: any) => {
   const {signOut} = useContext(AuthContext);
   const user = useStore(state => state.user);
 
@@ -43,7 +43,11 @@ const Account = () => {
 
         <View style={{margin: 23}}>
           <Option icon="edit" label="Edit Profile" />
-          <Option icon="unlock" label="Forogot Password" />
+          <Option
+            icon="unlock"
+            label="Forogot Password"
+            onPress={() => navigation.navigate('ForgotPass')}
+          />
         </View>
       </View>
       <Pressable onPress={handleSignOut} style={styles.logout}>

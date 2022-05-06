@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 18,
     marginBottom: 3,
+    flex: 1,
   },
   row: {
     marginTop: 5,
